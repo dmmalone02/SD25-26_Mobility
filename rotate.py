@@ -33,6 +33,7 @@ class RotateAngle(Node):
         super().__init__('rotate')
 
         # Parameters
+        self.declare_parameter('xx')  # default robot name
         self.declare_parameter('angle_deg', 90.0)
         self.declare_parameter('angular_speed', 0.5)  # rad/s
 
@@ -49,12 +50,12 @@ class RotateAngle(Node):
 
         # ROS interfaces
         self.cmd_pub = self.create_publisher(
-            Twist, '/tb_std/cmd_vel_unstamped', 10
+            Twist, '/tb_{xx}/cmd_vel_unstamped', 10
         )
 
         self.odom_sub = self.create_subscription(
             Odometry,
-            '/tb_std/odom',
+            '/tb_{xx}/odom',
             self.odom_callback,
             10
         )

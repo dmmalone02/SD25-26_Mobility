@@ -16,16 +16,15 @@ from std_msgs.msg import Bool
 #################################################################################################################
 #################################################################################################################
 
-# Command line input (CLI): ros2 run your_package move_forward --ros-args -p distance:=0.5 -p speed:=0.15
+# Command line input (on turtlebot): ros2 run your_package move_forward --ros-args -p distance:=0.5 -p speed:=0.15
 def get_position(msg):
     return msg.pose.pose.position.x, msg.pose.pose.position.y
-
-
 class MoveForward(Node):
     def __init__(self):
         super().__init__('move_forward')
 
         # Declare parameters (CLI configurable)
+        self.declare_parameter('xx')  # default robot nameeither 01 (for TB Lite) or 02 (for TB Standard)
         self.declare_parameter('distance', 0.5)   # meters
         self.declare_parameter('speed', 0.1)      # m/s
 
@@ -33,10 +32,10 @@ class MoveForward(Node):
         self.speed = abs(self.get_parameter('speed').value)
 
         # ROS interfaces
-        self.cmd_pub = self.create_publisher(Twist, '/tb_std/cmd_vel_unstamped', 10)
+        self.cmd_pub = self.create_publisher(Twist, '/tb_{xx}/cmd_vel_unstamped', 10)
         self.odom_sub = self.create_subscription(
             Odometry,
-            '/tb_std/odom',
+            '/tb_{xx}/odom',
             self.odom_callback,
             10
         )
